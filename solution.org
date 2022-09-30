@@ -1,0 +1,103 @@
+* 1. Open access to admin page.
+Although the only thing possible to send through is just a change to the credit score through there. 
+https://127.0.0.1/admin
+
+[[./Images/05.png]]
+
+Easy access to set the "hecker" account to have 999 credit score. Even though it has no possibility in code, in a real bank credit score can affect "The higher your credit score, the better your chances of being accepted for credit, and at the best rates" which if manipulated may lead to banks lending huge amounts of money to customers who have had bad history with transactions previously.
+
+* 2. Denial of Access
+
+** Code in Question
+#+BEGIN_SRC python
+    unique = False
+    while not unique:
+        # Generates two numbers for the sort code
+        sortnum1 = random.randrange(0, 100)
+        sortnum2 = random.randrange(0, 100)
+
+        # Creates the sort code in the correct format
+        sort = "06-" + str(sortnum1).zfill(2) + "-" + str(sortnum2).zfill(2)
+
+        # Generates a number for the account number
+        accnum = random.randrange(0, 100000000)
+
+        # Creates the account number in the correct format
+        acc = str(accnum).zfill(8)
+
+        # Tries to retrieve a bank account from the database with the same sort code or account number
+        connection = sqlite3.connect("falihax.db")
+        connection.row_factory = sqlite3.Row
+        cursor = connection.cursor()
+        cursor.execute("select * from bank_accounts where sort_code = \"" + sort + "\" or account_number = \"" + acc +
+                       "\"")
+        row = cursor.fetchone()
+        connection.close()
+
+        # If no account is found then the numbers are unique
+        if row is None:
+            unique = True
+#+END_SRC
+
+This code basically searches untill there is a unique sort code and account code. But the sort code is just arranged in such a manner that sorts will only take place. We will try to build an account generator for the site to deny all access by reaching the max account limit.
+Overloading the database using a script. Anonymous accounts are not allowed to have an account so we will make accounts from the "hecker" id.
+
+** Executing the database overloading
+
+[[./Images/01.png]]
+
+We created another account using requests and python and we shall overload that :
+
+[[./Images/02.png]]
+
+We now overload the database untill we get overload totally.
+
+[[./Images/03.png]]
+
+Yeah we overloaded it, now its stuck to create an account for eternity. So keeping small range of sort code should not be the practice.
+
+[[./Images/04.png]]
+
+I left it to create an account, it was still stuck on this page for 7 hours still. So I think I just overloaded it.
+
+* 3. Password attacks
+We create a base account with "hecker2" and password "football" and try to extract it back.
+
+[[./Images/10.png]]
+
+So the server is susceptible to dictionary attacjs immediately.
+
+* 4. MITM attacks and unsalted passwords
+
+So in theory there is a chance that as the network packets could be sniffed in midway and obtain passwords or change transactions. Lets try that out in practice then. Sniffed passwords could be avoided by hashing the password on the client side and someform of XSS avoidance to protect the transactions. 
+
+[[./Images/06.png]]
+
+* 5. SQL injection for the data
+
+So injection has some potenitial. Lets implement it then : 
+Since there is a base vuln in the username tags in most of the sections here we shall be using it as a base.
+
+[[./Images/09.png]]
+
+But this is pretty sql safe as flask sanitizes aginst most accessing ones except for time based attacks.
+
+* 6. Open password storing.
+
+I mean a simple password encryption on the database would easily do wonders than having unencrypted passwords on the database.  zero encryption on passworDS stored in database is not good.
+
+[[./Images/08.png]]
+
+
+* In conclusion
+
+Yes this bank is fucked. Better not put up the bank up like this. Notes :
+
+- Store hashes in passwords
+- Send hashes of passwords to prevent MITM
+- Secure against timed attacks
+- Secure against passowrd attacks but limiting number of tries
+- Increase account capacity (currently 10k accounts only)
+- For pete's sake, please delete the admin page or let only admins access the page through authentiction.
+
+That's all folks
