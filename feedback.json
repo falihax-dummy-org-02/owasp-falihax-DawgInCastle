@@ -1,0 +1,96 @@
+{
+  "repo": "DawgInCastle/owasp-falihax",
+  "summary": "A really good writeup of some security issues in this web app. Some big vulnerabilities were missed out, but those which were included are really interesting and show a good understanding, more from a black-box penetration testing point of view than the more traditional code review perspective.\n\nNo attempt was made to fix any of the vulnerabilities, however the writeup was great and still got many marks.",
+  "found_vulns": [
+    {
+      "id": "A01-03",
+      "marks": {
+        "state": true,
+        "show": false,
+        "demo": true,
+        "mitigate": true,
+        "attempt": false,
+        "works": false,
+        "explain": false
+      }
+    },
+    {
+      "id": "A02-01",
+      "marks": {
+        "state": true,
+        "show": false,
+        "demo": false,
+        "mitigate": false,
+        "attempt": false,
+        "works": false,
+        "explain": false
+      },
+      "note": "Your reasoning about storing passwords on the database in plaintext is not entirely correct - the web app does use ROT-13 to encode passwords within the database. However, this is not really a secure form of encryption as it does not use any key so you are right there. Unfortunately since you only tried with numeric passwords (and ROT-13 does not modify numbers) you didn't spot this, nor did you notice it in the code. Therefore some marks were lost as the demonstration wasn't entirely accurate, you could also have reccommended some specific hashing algorithm for more marks.\n\nAlso, it would have been clearer and easier for you if you opened the database in an SQLite viewer tool such as the database explorer built into PyCharm. You appear to have opened the database in a text editor which isn't guaranteed to display database contents correctly."
+    },
+    {
+      "id": "A03-01",
+      "marks": {
+        "state": true,
+        "show": false,
+        "demo": true,
+        "mitigate": false,
+        "attempt": false,
+        "works": false,
+        "explain": false
+      },
+      "note": "You are correct that the web app is vulnerable to SQL injection, however your claim that Flask sanitises input or protects against SQL injection attacks is not correct. This is especially the case here as we aren't using a Flask-related package to handle database tasks, we are using the standard `sqlite3` package with raw, unsanitised SQL statement strings.\n\nWe couldn't give you marks for mentioning securing against time attacks, because you didn't explain what specific kind of timing attack you meant or show how it could be used, or give examples of how it could be mitigated. But this was a good idea, it just needed expanding a little!"
+    },
+    {
+      "id": "A04-02",
+      "marks": {
+        "state": true,
+        "show": false,
+        "demo": true,
+        "mitigate": false,
+        "attempt": false,
+        "works": false,
+        "explain": false
+      },
+      "note": "You could have also added how to mitigate this issue, perhaps by introducing password complexity requirements."
+    },
+    {
+      "id": "A04-03",
+      "marks": {
+        "state": true,
+        "show": false,
+        "demo": false,
+        "mitigate": false,
+        "attempt": false,
+        "works": false,
+        "explain": false
+      },
+      "note": "Good idea - although I think you missed it out of your main writeup! I only found reference to it in your conclusion rather than the main writeup, if there was more detail or examples on how to mitigate this then it would be worth more marks."
+    },
+    {
+      "id": "A04-04",
+      "marks": {
+        "state": true,
+        "show": false,
+        "demo": true,
+        "mitigate": true,
+        "attempt": false,
+        "works": false,
+        "explain": false
+      },
+      "note": "This is a good point that not many other people noticed! Your explanation is good, although take care to ensure the password is still hashed on the server for a second time to prevent replay attacks. See A04-04 in the general feedback for more information.\n\nAlso, some marks were missed here because you didn't really explain how XSS links into this issue - XSS could be a vulnerability in itself, albeit not one we found when searching, but it's not clear how it is connected to MITM attacks."
+    },
+    {
+      "id": "B01-01",
+      "marks": {
+        "state": true,
+        "show": false,
+        "demo": true,
+        "mitigate": true,
+        "attempt": false,
+        "works": false,
+        "explain": false
+      },
+      "note": "Great work, you were the only entrant to notice this subtle vulnerability! Your reasoning was great and I really liked the step by step explanation with screenshots."
+    }
+  ]
+}
